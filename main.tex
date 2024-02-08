@@ -1,0 +1,344 @@
+\documentclass{article}
+\usepackage[top=0.05\paperheight,bottom=0.1\paperheight,left=.1\paperwidth,right=.1\paperwidth]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} 
+\usepackage[font=md,font=footnotesize,labelfont=md,labelformat=simple]{caption}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue}
+\usepackage{listings}
+\lstset{language=[LaTeX]TeX,breaklines=true}
+\usepackage{dirtree}
+\usepackage{xurl}
+
+\title{Coding in Astro \\ A short introduction to \texttt{git}}
+\author{Sylvain Breton}
+%\date{January 2024}
+
+\begin{document}
+\lstset{basicstyle = \ttfamily,columns=fullflexible}
+
+\maketitle
+
+\section{Introduction}
+
+\texttt{git}\footnote{See \texttt{git} official documentation: \url{https://git-scm.com}.} is a free open source tool dedicated to code version control. It is almost universally used in modern software development. It is unavoidable when working on large projects involving several developer while being a great asset to keep track on the changes and evolution you apply on your personal projects.
+To go through the tutorial presented in this document, you should first create an account on \href{https://gitlab.com/}{\texttt{GitLab}} or \href{https://github.com/}{\texttt{GitHub}} (having an account on both platforms is always useful).
+
+From experience, I would say that \texttt{git} is a very good example of \textit{learn by practice} tool. Some concepts that appear somewhat abstract or useless for the beginner's eye reveal their relevance only after a few times of struggling with code management and thinking \textit{Ok things would be so much simpler if I were able to do this !} I would therefore advise you to force yourself to use \texttt{git} on each of your new project, and you will see that you steadily progress in skill and understanding.
+
+Finally, as disclaimer, note that this guide is not meant to provide an exhaustive description of \texttt{git} possibilities, but rather to walk you throughout some key functionalities and allow you to explore what remain by yourself. Have fun !
+
+
+\section{Installation}
+
+Before starting the tutorial, you should check that \texttt{git} is installed in your system. Just type in the console
+\begin{lstlisting}
+    $ git
+\end{lstlisting}
+and if the command is unknown, follow the installation instructions from the official documentation: \\ \url{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}.
+
+\section{Your first repository}
+
+\subsection{\texttt{git} configuration}
+
+Before proceeding to the rest of the tutorial, you should be sure that \texttt{git} knows at least your username and your email address. You can check which elements are already configured by doing
+\begin{lstlisting}
+    $ git config --list
+\end{lstlisting}
+
+If they are not, do
+\begin{lstlisting}
+    $ git config --global user.name "Roger of Sicily"
+    $ git config --global user.email roger_of_sicily@example.com
+\end{lstlisting}
+
+Additional configuration options are described here on the official documentation: \\ \url{https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration}. In particular, it can be useful to configure the name of the repository default branch to \texttt{main}
+\begin{lstlisting}
+    $ git config --global init.defaultBranch main
+\end{lstlisting}
+
+\subsection{Creating the repository}
+
+Open the console and navigate to the point where you want to create the repository
+%\footnote{You are obviously free to use another text editor than \texttt{vim}, let's say I am just used to it... I will take no questions. If you decide to go with \texttt{vim}, type \texttt{i} to edit the text, \texttt{esc} when you're done and \texttt{:wq} to save and exit.}
+\begin{lstlisting}
+    $ mkdir tutorial
+    $ cd tutorial
+\end{lstlisting}
+Once you are there, create a file that you will name \texttt{README.md}. Inside the \texttt{README.md} file, write something like\footnote{This is a Markdown file, that you can format using the syntax instructions described here: \url{https://www.markdownguide.org/basic-syntax/}.}
+\begin{lstlisting}
+# My first repository
+
+Hello world ! This is my first repository !
+\end{lstlisting}
+You will note that until now we have done nothing with \texttt{git}. Let our directory become a repository !
+\begin{lstlisting}
+    $ git init
+    $ git add README.md
+    $ git commit -m "Adding README file"
+\end{lstlisting}
+The \texttt{init} command initiated the repository. The \texttt{add} command added \texttt{README.md} as a \texttt{git} tracked file and included it to be considered in the next commit. The files to be included in the commit, the files with change but not yet included, and the untracked files, can be displayed by doing
+\begin{lstlisting}
+    $ git status
+\end{lstlisting}
+The \texttt{commit} command add the change just made to the history log of the repo, that you can display with 
+\begin{lstlisting}
+    $ git log
+\end{lstlisting}
+
+\subsection{Creating the distant repository}
+
+One of the main asset of using \texttt{git} is to manage your local repositories together with distant repositories hosted on platforms such as \texttt{GitLab} or \texttt{GitHub}. In what follows, I will consider \texttt{GitLab} for the example that is of interest for us.
+With your \texttt{GitLab} account, click on \textit{New project}. Call it \textit{tutorial} and make sure you untick the sentence asking if you want to initialise your new repository with a \texttt{README.md} file.
+Once it is created, follow the three last lines of the instructions provided in the \textit{Push an existing Git repository} case
+\begin{lstlisting}
+    $ git remote add origin git@gitlab.com:sybreton/tutorial.git
+    $ git push --set-upstream origin --all
+    $ git push --set-upstream origin --tags
+\end{lstlisting}
+
+\subsection{Cloning an existing repository}
+
+You will very often work with distant repository collected from \texttt{GitLab} or \texttt{GitHub}. You can clone either using HTTPS (first syntax) or SSH (second syntax):
+
+\begin{lstlisting}
+    $ git clone git@gitlab.com:the_repo_location
+    $ git clone https://@gitlab.com:the_repo_location
+\end{lstlisting}
+
+\subsection{Some standard repository structure}
+
+The internal tree structure of most \texttt{Python} package is as follows 
+\dirtree{%
+.1 tutorial. 
+.2 README.md.
+.2 MANIFEST.in. 
+.2 requirements.txt.
+.2 LICENSE.
+.2 pyproject.toml.
+.2 setup.py.
+.2 docs.
+.2 src.
+.3 tutorial.
+.4 \_\_init\_\_.py.
+.4 source\_code.py.
+.2 tests.
+.3 some\_test\_file.py.
+.2 notebooks.
+.3 a\_tutorial\_notebook.ipynb.
+.2 .gitignore.
+}
+
+Although it would be too long for this tutorial to describe the exact interest of all these files and repo, you can note that the actual source code will be put in the \texttt{src/tutorial} directory. To continue with the following sections of the tutorial, create at list the \texttt{src/tutorial} directory.
+
+\subsection{Branches}
+
+A key feature of \texttt{git} is the possibility to have, on one repository, different branches with each of them displaying the code you are working on in diverse states.
+You can show the existing branches with 
+\begin{lstlisting}
+    $ git branch
+\end{lstlisting}
+In particular, it displays which the active branch is.
+The current standard name of the reference branch is \texttt{main}. It can be useful to create a new branch, let's call it \texttt{dev}. 
+\begin{lstlisting}
+    $ git branch dev
+\end{lstlisting}
+You can switch branches by doing
+\begin{lstlisting}
+    $ git checkout dev
+\end{lstlisting}
+Note that you can create a branch and instantaneously make it the active branch
+\begin{lstlisting}
+    $ git checkout -b dev
+\end{lstlisting}
+Now, go to \texttt{src/tutorial} and create the \texttt{source\_code.py} file with inside
+\begin{lstlisting}
+def my_function () :
+    """
+    A useless function that prints ``Hello world``.
+    """
+    print ("Hello world !")
+\end{lstlisting}
+We are going to add the file, commit the change, and push to new distant branch that our local \texttt{dev} will now be tracking
+\begin{lstlisting}
+    $ git add source_code.py
+    $ git commit -m "Add file with crucial source code"
+    $ git push -u origin dev
+\end{lstlisting}
+Note that, once your local branch knows which branch to track, you can simply push on the distant repo by doing 
+\begin{lstlisting}
+    $ git push
+\end{lstlisting}
+As \texttt{dev} is now different from \texttt{main}, you can compare the two branches by doing (assuming your active branch is still \texttt{dev})
+\begin{lstlisting}
+    $ git diff main
+\end{lstlisting}
+If your local branch is lacking commits with respect to the distant branch, you will need to do 
+\begin{lstlisting}
+    $ git pull
+\end{lstlisting}
+Finally, note that you can fetch a distant branch with the following instruction 
+\begin{lstlisting}
+    $ git fetch origin dev
+\end{lstlisting}
+This functionality might prove useful when you are doing advanced operations such as \textit{rebasing} (see Sect.~\ref{sec:rebasing}).
+
+\section{More advanced functionalities}
+
+\subsection{Merging}
+
+You probably wonder how to apply the development you made on \texttt{dev} onto \texttt{main}. This operation is called \textit{merging}.
+\begin{lstlisting}
+    $ git checkout main
+    $ git merge dev
+\end{lstlisting}
+In case the two branches have conflicting histories, \texttt{git} will highlight the conflict between branches, ask you to make the required modification, then commit them. In our case, a simple \textit{fast-forward} is sufficient here.
+
+\subsection{Diverging commit logs: rebasing \label{sec:rebasing}}
+
+\textit{Rebasing} is maybe the most important of the advanced features provided by \texttt{git}. The core idea is to allow to branch that diverged in terms of commit history to share again the same linear commit history, by putting all commits of one given branch behind the ones of the other\footnote{Obviously, you could just merge the two branches as previously shown, but you would still have to manually fix the branch conflict and that would produce an ugly non-linear commit log.}.
+Mastering this functionality is key when different person work on different branches/fork (see below what \textit{forking} is) of the same project and want to keep a clean project history.
+
+To illustrate this functionality, change the function you created to 
+\begin{lstlisting}
+def my_function () :
+    """
+    A useless function that prints ``Hello world``.
+    """
+    print ("Hello world (main branch version) !")
+\end{lstlisting}
+then commit the change and checkout to dev (which will not own this modification yet).
+\begin{lstlisting}
+    $ git commit source_code.py -m "Main branch version"
+    $ git checkout dev
+\end{lstlisting}
+On \texttt{dev}, make the following change
+\begin{lstlisting}
+def my_function () :
+    """
+    A useless function that prints ``Hello world``.
+    """
+    print ("Hello world (dev branch version) !")
+\end{lstlisting}
+then commit it
+\begin{lstlisting}
+    $ git commit source_code.py -m "Dev branch version"
+\end{lstlisting}
+Now, let's ask for the rebase operation.
+\begin{lstlisting}
+    $ git rebase main
+\end{lstlisting}
+There are merge conflicts, and \texttt{git} will mention it with a detailed statement !
+\begin{lstlisting}
+First, rewinding head to replay your work on top of it...
+Applying: Dev branch version
+Using index info to reconstruct a base tree...
+M	src/tutorial/source_code.py
+Falling back to patching base and 3-way merge...
+Auto-merging src/tutorial/source_code.py
+CONFLICT (content): Merge conflict in src/tutorial/source_code.py
+error: Failed to merge in the changes.
+Patch failed at 0001 Dev branch version
+hint: Use 'git am --show-current-patch' to see the failed patch
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+\end{lstlisting}
+Here is what you should get inside \texttt{source\_code.py}, with the location of the merge conflicts highlighted by \texttt{git}
+\begin{lstlisting}
+def my_function () :
+    """
+    A useless function that prints ``Hello world``.
+    """
+<<<<<<< HEAD
+    print ("Hello world (main branch version) !")
+=======
+    print ("Hello world (dev branch version) !")
+>>>>>>> Dev branch version
+\end{lstlisting}
+Edit the file to have again the code version you wanted applied at this step, that is 
+\begin{lstlisting}
+    print ("Hello world (dev branch version) !")
+\end{lstlisting}
+then proceed with the instruction displayed in the console, that is
+\begin{lstlisting}
+    $ git add source_code.py
+    $ git rebase --continue
+\end{lstlisting}
+You now have a clean commit history if you do \texttt{git log} !
+
+\subsection{Tagging}
+
+You might want to put easy to retrieve labels on keystone version of your project. Tags are here for this ! 
+\begin{lstlisting}
+    $ git tag -a v1.0 -m "version 1.0"
+\end{lstlisting}
+To display existing tags, just do
+\begin{lstlisting}
+    $ git tag 
+\end{lstlisting}
+You can look at a specific tag information by doing
+\begin{lstlisting}
+    $ git show v1.0
+\end{lstlisting}
+They should be pushed explicitly on distant repositories 
+\begin{lstlisting}
+    $ git push --tags
+\end{lstlisting}
+Note that you can navigate from one commit to another, or one tag to another, using the \texttt{checkout} command.
+\begin{lstlisting}
+    $ git checkout v1.0
+\end{lstlisting}
+
+\subsection{\texttt{.gitignore} files}
+
+Doing \texttt{git status} also display the list of untracked files. Sometimes, there can be a lot of them and this might be a problem for readability of the command output. To prevent this, you can create a \texttt{.gitignore} file at the root of your project in order to specify file patterns that should not be tracked. Note that  \texttt{GitLab} and \texttt{GitHub} can automatically create for you a \texttt{.gitignore} template with file patterns to ignore selected regarding the language you are using for your project. You can read more about \texttt{.gitignore} on the online documentation: \url{https://git-scm.com/docs/gitignore}.
+
+\subsection{Exchanging SSH keys}
+
+If you pull or push commits from a private distant repository, \texttt{GitHub} or \texttt{GitLab} will require you to enter your username and password each time you need to interact with the distant repository, which might prove a little bit fastidious. The way around this is to set up a SSH key on your computer and to share its public signature with the distant platform. Below are the links with more detailed explanation both for \texttt{GitLab} and \texttt{GitHub}:
+\begin{itemize}
+    \item  \url{https://docs.gitlab.com/ee/user/ssh.html}
+    \item \url{https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account}
+\end{itemize}
+
+\subsection{Forking}
+
+Both \texttt{GitLab} and \texttt{GitHub} offer the possibility to create your own repository from a repository owned by someone else. This is called \textit{forking}, and will allow you to work on your version of the repository as maintainer. The two repositories remain connected in the sense that you can ask for \textit{merge requests} from one of your branches to the original repository to provide some developments you want to share.
+
+\subsection{Pipelines}
+
+When your project reach an advanced state and that you have a ready-to-deploy module, it is useful to know that \texttt{GitLab} and \texttt{GitHub} allow you to use automated testing and deployment pipeline (Continuous Integration / Continuous Delivery, CI/CD) on the platform\footnote{You can read more about here e.g. in the case of \texttt{GitLab}: \url{https://docs.gitlab.com/ee/ci/}}. 
+The action to execute are provided at the root of the repository, in a file named \texttt{.gitlab-ci.yml}, in the case of \texttt{GitLab}.
+Below is a simple example of CI/CD pipeline that simply check, in two stages, that the module is able to correctly install and that the test run properly:
+\begin{lstlisting}
+    stages:
+     - build
+     - test
+    
+    build:
+     stage: build
+     image: python:3.9
+     script:
+      - pip install -r requirements.txt
+      - pip install .
+    
+    test:
+     stage: test
+     image: python:3.9
+     before_script:
+      - pip install -r requirements.txt
+      - pip install .
+      - pip install pytest==7.2.0
+     script:
+      - pytest tests/some_test_file.py
+
+\end{lstlisting}
+
+\end{document}
