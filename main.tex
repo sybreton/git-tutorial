@@ -273,6 +273,26 @@ then proceed with the instruction displayed in the console, that is
 \end{lstlisting}
 You now have a clean commit history if you do \texttt{git log} !
 
+\subsection{Resetting}
+
+It can be sometimes useful to revert a commit made by mistake or including unwanted content, or to refactor the recent commit history. This is possible through the \texttt{reset} instruction. 
+
+Let's say that you want to remove the three latest commits, \textit{including the modifications that were made in the files}. In this case, it is possible to do 
+
+\begin{lstlisting}
+    $ git reset --hard HEAD~3
+\end{lstlisting}
+
+Another situation is that you might have made a series of minor commits that you want to gather in only one larger commit. The solution is to use the \texttt{soft} option of the \texttt{reset} command.
+
+\begin{lstlisting}
+    $ git reset --soft HEAD~3
+\end{lstlisting}
+
+In this case, the three latest commits will be removed, but the corresponding changes in the files will be kept and added to the list of changes to be committed. 
+
+If the local commit history becomes then incompatible with the commit history of the remote branch, you will need to do \texttt{git push --force} (so make sure not to erase any commit history that you would want to keep otherwise !). 
+
 \subsection{Tagging}
 
 You might want to put easy to retrieve labels on keystone version of your project. Tags are here for this ! 
